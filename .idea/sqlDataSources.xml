@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDataSourceStorage">
+    <option name="dataSources">
+      <list>
+        <State>
+          <option name="id" value="3758c51c-9fd6-4137-9361-3fe9ddcea714" />
+          <option name="name" value="sql" />
+          <option name="urls">
+            <array>
+              <option value="file://$PROJECT_DIR$/../spring/spring utile/src/sql.sql" />
+            </array>
+          </option>
+        </State>
+      </list>
+    </option>
+  </component>
+</project>
