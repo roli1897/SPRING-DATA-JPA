@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/data/jpa
+		http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+    <!--des configurations pour Spring et Spring Data JPA-->
+
+    <!-- 1.Création de l'objet entityManagerFactory géré par le conteneur Spring :-->
+    <bean id="entityManagerFactoty" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!--Configuration des packages à scanner pour trouver les entités.  -->
+        <property name="packagesToScan" value="cn.itcast.domain" />
+        <!-- Configuration du fournisseur d'implémentation JPA. -->
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>
+        </property>
+
+        <!--configurations pour le fournisseur JPA -->
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <!--Configuration de la création automatique des tables de la base de données -->
+                <property name="generateDdl" value="false" />
+                <!--Spécification du type de base de données -->
+                <property name="database" value="MYSQL" />
+                <!--Dialecte de base de données : prend en charge les syntaxes spécifiques-->
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+                <!--Affichage des requêtes SQL -->
+                <property name="showSql" value="true" />
+            </bean>
+        </property>
+
+        <!--jpaDialect -->
+        <property name="jpaDialect" >
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+        </property>
+
+        <!-- injecter les informations de configuration de JPA et charger les informations de base de JPA(hibernate)
+            hibernate.hbm2ddl.auto : pour la création automatique des tables
+                create ：  les tables soient recréées à chaque démarrage
+                update：les tables existantes ne seront pas recréées, mais les tables manquantes seront créées.
+        -->
+        <property name="jpaProperties" >
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+
+    </bean>
+
+    <!--2.Création du pool de connexions à la base de données  -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="user" value="root"></property>
+        <property name="password" value="9u5pfvws"></property>
+        <property name="jdbcUrl" value="jdbc:mysql:///jpa" ></property>
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"></property>
+    </bean>
+
+    <!--3.Configuration de Spring Data JPA :-->
+    <jpa:repositories base-package="cn.itcast.dao" transaction-manager-ref="transactionManager"
+                   entity-manager-factory-ref="entityManagerFactoty" ></jpa:repositories>
+
+    <!--4.Configuration du gestionnaire de transactions  -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactoty"></property>
+    </bean>
+
+    <!-- 4.txAdvice-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="insert*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- 5.aop-->
+    <aop:config>
+        <aop:pointcut id="pointcut" expression="execution(* cn.itcast.*.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut" />
+    </aop:config>
+
+
+
+    <!-- 6. configurer la numérisation des packages dans Spring-->
+    <context:component-scan base-package="cn.itcast" ></context:component-scan>
+</beans>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+    <!--Configurations spécifiques à l'unité de persistance-->
+
+    <persistence-unit name="myJpa" transaction-type="RESOURCE_LOCAL">
+        <!--le manières pour implémenter JPA -->
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+
+        <properties>
+            <!-- les informations de base de données:
+                Nom d'utilisateur : javax.persistence.jdbc.user
+                Mot de passe : javax.persistence.jdbc.password
+                Pilote : javax.persistence.cj.jdbc.driver
+                URL de la base de données : javax.persistence.jdbc.url
+            -->
+            <property name="javax.persistence.jdbc.user" value="root"/>
+            <property name="javax.persistence.jdbc.password" value="9u5pfvws"/>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql:///jpa"/>
+
+            <!--la configuration de l'implémentation Hibernate dans JPA
+                Affichage des requêtes SQL ： false|true
+                configuration pour activer la création automatique des tables ： hibernate.hbm2ddl.auto
+            -->
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+    </persistence-unit>
+</persistence>

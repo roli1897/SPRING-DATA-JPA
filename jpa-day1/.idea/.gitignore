@@ -1,0 +1,8 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/../../../../../../../../../:\14-Spring Data JPA-20230207T155534Z-001\14-Spring Data JPA\01-第一天\课件资料\课件资料\03-代码\jpa-day1\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
